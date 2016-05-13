@@ -60,8 +60,8 @@ static cl::opt<std::string> FileName(cl::Positional, cl::desc("<file>"),
                                      cl::cat(ClangHighlightCategory));
 
 static void PrintVersion() {
-  raw_ostream &OS = llvm::outs();
-  OS << clang::getClangToolFullVersion("clang-highlight") << '\n';
+  // raw_ostream &OS = llvm::outs();
+  // OS << clang::getClangToolFullVersion("clang-highlight") << '\n'; 
 }
 
 static bool parserHighlight(StringRef File, OutputFormat Format,
@@ -94,8 +94,8 @@ int main(int argc, const char **argv) {
   llvm::sys::PrintStackTraceOnErrorSignal();
 
   // Hide unrelated options.
-  StringMap<cl::Option *> Options;
-  cl::getRegisteredOptions(Options);
+  auto& Options{cl::getRegisteredOptions()};
+  
   for (auto &Option : Options)
     if (Option.second->Category != &ClangHighlightCategory &&
         Option.first() != "help" && Option.first() != "version")

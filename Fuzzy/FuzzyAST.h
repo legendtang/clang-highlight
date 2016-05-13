@@ -328,7 +328,7 @@ class LineStmt : public Stmt {
 protected:
   LineStmt(ASTElementClass SC, AnnotatedToken *Semi)
       : Stmt(SC), Semi(Semi, this) {}
-  LineStmt(ASTElementClass SC, nullptr_t) : Stmt(SC), Semi(nullptr) {}
+  LineStmt(ASTElementClass SC, std::nullptr_t) : Stmt(SC), Semi(nullptr) {}
 
 public:
   void setSemi(AnnotatedToken *Tok) { Semi = AnnotatedTokenRef(Tok, this); }

@@ -12,6 +12,7 @@
 
 #include "clang/Lex/Lexer.h"
 #include <memory>
+#include <cstddef>
 
 namespace clang {
 namespace fuzzy {
@@ -49,7 +50,7 @@ public:
     if (ATok)
       ATok->setASTReference(AstRef);
   }
-  AnnotatedTokenRef(nullptr_t = nullptr) : ATok(nullptr) {}
+  AnnotatedTokenRef(std::nullptr_t  = nullptr) : ATok(nullptr) {}
   AnnotatedTokenRef(const AnnotatedTokenRef &) = default;
   AnnotatedTokenRef(AnnotatedTokenRef &&) = default;
 

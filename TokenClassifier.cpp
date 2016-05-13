@@ -13,7 +13,7 @@
 #include "clang/Basic/FileManager.h"
 #include "clang/Basic/LangOptions.h"
 #include "clang/Basic/SourceManager.h"
-#include "llvm/Config/config.h"
+#include "llvm/Config/llvm-config.h"
 #include "OutputWriter.h"
 #include <unordered_set>
 #include "TokenClassifier.h"
