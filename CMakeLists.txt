@@ -25,15 +25,21 @@ find_program (LLVM_CONFIG_WITH_NUMBER "llvm-config-${LLVM_VERSION_MAJOR}.${LLVM_
 message(STATUS "Found: ${REAL_LLVM_CONFIG}")
 
 #get compile flags
-execute_process(COMMAND "${REAL_LLVM_CONFIG}" --cppflags  OUTPUT_VARIABLE CPP_LLVM_CONFIG OUTPUT_STRIP_TRAILING_WHITESPACE)
+execute_process(COMMAND "${REAL_LLVM_CONFIG}" --cxxflags  OUTPUT_VARIABLE CPP_LLVM_CONFIG OUTPUT_STRIP_TRAILING_WHITESPACE)
 
 #get system lib link flags
 execute_process(COMMAND "${REAL_LLVM_CONFIG}" --system-libs OUTPUT_VARIABLE SYSTEM_LIBS_LLVM_CONFIG OUTPUT_STRIP_TRAILING_WHITESPACE)
 
 
 execute_process(COMMAND "${REAL_LLVM_CONFIG}" --includedir OUTPUT_VARIABLE LLVM_CONFIG_INCLUDE_DIR OUTPUT_STRIP_TRAILING_WHITESPACE)
-include_directories(SYSTEM ${LLVM_CONFIG_INCLUDE_DIR})
+
+execute_process(COMMAND "${REAL_LLVM_CONFIG}" --src-root OUTPUT_VARIABLE LLVM_SRC_DIR OUTPUT_STRIP_TRAILING_WHITESPACE)
+
+execute_process(COMMAND "${REAL_LLVM_CONFIG}" --obj-root OUTPUT_VARIABLE LLVM_OBJ_DIR OUTPUT_STRIP_TRAILING_WHITESPACE)
+include_directories(SYSTEM ${LLVM_SRC_DIR}/tools/clang/include SYSTEM ${LLVM_OBJ_DIR}/tools/clang/include SYSTEM ${LLVM_CONFIG_INCLUDE_DIR})
 message(STATUS "include dir is ${LLVM_CONFIG_INCLUDE_DIR}")
+
+
 
 execute_process(COMMAND "${REAL_LLVM_CONFIG}" --libdir OUTPUT_VARIABLE LLVM_CONFIG_LINk_DIR OUTPUT_STRIP_TRAILING_WHITESPACE)
 link_directories( ${LLVM_CONFIG_LINk_DIR} )
@@ -49,21 +55,23 @@ add_executable(clang-highlight
   OutputWriter.cpp
   )
 
-set (LLVM_LIBS    
-    LLVMOption 
+set (LLVM_LIBS
+    LLVMOption
     LLVMMC 
-    LLVMObject 
-    LLVMBitReader 
-    LLVMCore 
-    LLVMSupport 
+    LLVMObject
+    LLVMBitReader
+    LLVMCore
+    LLVMSupport
     LLVMMCParser
+    LLVMBinaryFormat
+    LLVMRemarks
     )
 
   set(CLANG_LIBS
-    clangBasic 
-  clangFrontend 
-  clangSerialization 
-  clangDriver 
+    clangBasic
+  clangFrontend
+  clangSerialization
+  clangDriver
   clangTooling 
   clangParse
   clangSema 
@@ -81,7 +89,7 @@ set (LLVM_LIBS
   clangRewriteFrontend 
   clangRewrite
   clangAST
-  clangQuery
+  # clangQuery
   clangASTMatchers
   clangDynamicASTMatchers
   )

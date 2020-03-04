@@ -31,8 +31,7 @@ LangOptions getFormattingLangOpts(bool Cpp03 = false) {
   LangOpts.CPlusPlus14 = Cpp03 ? 0 : 1;
   LangOpts.LineComment = 1;
   LangOpts.Bool = 1;
-  LangOpts.ObjC1 = 1;
-  LangOpts.ObjC2 = 1;
+  LangOpts.ObjC = 1;
   return LangOpts;
 }
 

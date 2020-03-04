@@ -47,8 +47,7 @@ static cl::opt<OutputFormat> OutputFormatFlag(
                clEnumValN(OutputFormat::HTML, "html", "write html"),
                clEnumValN(OutputFormat::SemanticHTML, "shtml",
                           "write semantic html"),
-               clEnumValN(OutputFormat::LaTeX, "latex", "write latex"),
-               clEnumValEnd),
+               clEnumValN(OutputFormat::LaTeX, "latex", "write latex")),
     cl::cat(ClangHighlightCategory));
 
 cl::opt<std::string> OutputFilename("o", cl::desc("Write output to <file>"),
@@ -59,9 +58,9 @@ static cl::opt<std::string> FileName(cl::Positional, cl::desc("<file>"),
                                      cl::Required,
                                      cl::cat(ClangHighlightCategory));
 
-static void PrintVersion() {
+static void PrintVersion(raw_ostream &OS) {
   // raw_ostream &OS = llvm::outs();
-  // OS << clang::getClangToolFullVersion("clang-highlight") << '\n'; 
+  OS << clang::getClangToolFullVersion("clang-highlight") << '\n';
 }
 
 static bool parserHighlight(StringRef File, OutputFormat Format,
@@ -91,13 +90,13 @@ static bool parserHighlight(StringRef File, OutputFormat Format,
 }
 
 int main(int argc, const char **argv) {
-  llvm::sys::PrintStackTraceOnErrorSignal();
+  llvm::sys::PrintStackTraceOnErrorSignal("clangHighlight");
 
   // Hide unrelated options.
   auto& Options{cl::getRegisteredOptions()};
   
   for (auto &Option : Options)
-    if (Option.second->Category != &ClangHighlightCategory &&
+    if (Option.second->Categories[0] != &ClangHighlightCategory &&
         Option.first() != "help" && Option.first() != "version")
       Option.second->setHiddenFlag(cl::ReallyHidden);
 
