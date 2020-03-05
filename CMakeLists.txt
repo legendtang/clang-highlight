@@ -37,7 +37,7 @@ execute_process(COMMAND "${REAL_LLVM_CONFIG}" --src-root OUTPUT_VARIABLE LLVM_SR
 
 execute_process(COMMAND "${REAL_LLVM_CONFIG}" --obj-root OUTPUT_VARIABLE LLVM_OBJ_DIR OUTPUT_STRIP_TRAILING_WHITESPACE)
 include_directories(SYSTEM ${LLVM_SRC_DIR}/tools/clang/include SYSTEM ${LLVM_OBJ_DIR}/tools/clang/include SYSTEM ${LLVM_CONFIG_INCLUDE_DIR})
-message(STATUS "include dir is ${LLVM_CONFIG_INCLUDE_DIR}")
+message(STATUS "include dir is ${LLVM_SRC_DIR}/tools/clang/include ${LLVM_OBJ_DIR}/tools/clang/include ${LLVM_CONFIG_INCLUDE_DIR}")
 
 
 
@@ -65,6 +65,7 @@ set (LLVM_LIBS
     LLVMMCParser
     LLVMBinaryFormat
     LLVMRemarks
+    LLVMDemangle
     )
 
   set(CLANG_LIBS
@@ -94,12 +95,20 @@ set (LLVM_LIBS
   clangDynamicASTMatchers
   )
 
+if(${CMAKE_CXX_COMPILER_ID} STREQUAL "GNU")
+    set(START_GROUP "-Wl,--start-group")
+    set(END_GROUP "-Wl,--end-group")
+else()
+    set(START_GROUP "")
+    set(END_GROUP "")
+endif()
+
 target_link_libraries(clang-highlight
   clangFuzzy
-  -Wl,--start-group
+        ${START_GROUP}
   ${CLANG_LIBS}
   ${LLVM_LIBS}
-  -Wl,--end-group
+        ${END_GROUP}
   ${SYSTEM_LIBS_LLVM_CONFIG}
   )
 
